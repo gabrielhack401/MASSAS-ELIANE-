@@ -589,4 +589,176 @@
         } else if (saborSelecionado && produto.saborOptions) {
             nomeItem = `${produto.nome} (${saborSelecionado})`;
         } else if (produto.saborOptions && !saborSelecionado) {
-            alert("Por favor, selecione um sabor antes de adicionar
+            alert("Por favor, selecione um sabor antes de adicionar.");
+            return false;
+        }
+        // check if same item (mesmo nome e mesmo sabor) -> incrementa
+        const existing = cartItems.find(item => item.nome === nomeItem && item.precoUnitario === preco);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cartItems.push({
+                id: produto.id,
+                nome: nomeItem,
+                saborSelecionado: saborSelecionado || null,
+                precoUnitario: preco,
+                quantity: 1
+            });
+        }
+        updateCartUI();
+        return true;
+    }
+
+    // functions to create product card
+    function buildProductCard(prod, isRecheada = true) {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "product-card";
+        const priceValue = prod.precoBase;
+        const saborEnabled = prod.saborOptions;
+        const cardInner = `
+            <div class="card-content">
+                <div class="product-name">
+                    ${prod.nome}
+                    <span class="product-price">R$ ${priceValue.toFixed(2)}</span>
+                </div>
+                <div class="product-icon">${prod.icone} ${prod.descricao.substring(0,80)}</div>
+                <div class="product-desc">${prod.descricao}</div>
+                <div class="select-sabor" data-id="${prod.id}">
+                    ${saborEnabled ? `
+                        <select class="sabor-select" data-prod-id="${prod.id}" style="padding:0.5rem; border-radius:60px; background: #fef1e6; border:1px solid #e6cfb5;">
+                            <option value="">Escolha o sabor</option>
+                            <option value="Carne">🥩 Carne</option>
+                            <option value="Frango">🍗 Frango</option>
+                            <option value="Queijo">🧀 Queijo</option>
+                            <option value="Brócolis">🥦 Brócolis</option>
+                            <option value="Palmito">🌴 Palmito</option>
+                            <option value="4 Queijos">🧀 4 Queijos</option>
+                        </select>
+                        <button class="sabor-btn add-custom" data-prod='${JSON.stringify(prod)}'><i class="fas fa-cart-plus"></i> Adicionar</button>
+                    ` : `
+                        <button class="add-btn lasanha-special" data-prod='${JSON.stringify(prod)}'><i class="fas fa-plus-circle"></i> Adicionar (sem sabor)</button>
+                    `}
+                </div>
+            </div>
+        `;
+        cardDiv.innerHTML = cardInner;
+        // bind events after insertion
+        setTimeout(() => {
+            if (saborEnabled) {
+                const addBtn = cardDiv.querySelector(".add-custom");
+                if (addBtn) {
+                    addBtn.addEventListener("click", (e) => {
+                        const prodData = JSON.parse(addBtn.getAttribute("data-prod"));
+                        const selectElem = cardDiv.querySelector(".sabor-select");
+                        const selectedSabor = selectElem ? selectElem.value : "";
+                        if (!selectedSabor) {
+                            alert(`Selecione um sabor para ${prodData.nome}`);
+                            return;
+                        }
+                        addToCart(prodData, selectedSabor);
+                    });
+                }
+            } else {
+                const addSimple = cardDiv.querySelector(".add-btn");
+                if (addSimple) {
+                    addSimple.addEventListener("click", (e) => {
+                        const prodData = JSON.parse(addSimple.getAttribute("data-prod"));
+                        addToCart(prodData, null);
+                    });
+                }
+            }
+        }, 5);
+        return cardDiv;
+    }
+
+    // Render grids
+    const recheadasGrid = document.getElementById("recheadasGrid");
+    const outrasGrid = document.getElementById("outrasGrid");
+    
+    produtos.recheadas.forEach(prod => {
+        recheadasGrid.appendChild(buildProductCard(prod, true));
+    });
+    produtos.outras.forEach(prod => {
+        outrasGrid.appendChild(buildProductCard(prod, false));
+    });
+
+    // Delivery selection
+    const deliveryHomeBtn = document.getElementById("deliveryHome");
+    const deliveryPickupBtn = document.getElementById("deliveryPickup");
+    const feeDisplay = document.getElementById("feeDisplay");
+
+    function setDelivery(type) {
+        deliveryType = type;
+        if (type === "delivery") {
+            deliveryHomeBtn.classList.add("active");
+            deliveryPickupBtn.classList.remove("active");
+            feeDisplay.innerHTML = "<i class='fas fa-motorcycle'></i> Entrega em casa: + R$ 10,00";
+        } else {
+            deliveryPickupBtn.classList.add("active");
+            deliveryHomeBtn.classList.remove("active");
+            feeDisplay.innerHTML = "<i class='fas fa-store'></i> Retirada no local: Grátis";
+        }
+        updateCartUI();
+        if (document.getElementById("cartModal").classList.contains("active")) renderCartModal();
+    }
+
+    deliveryHomeBtn.addEventListener("click", () => setDelivery("delivery"));
+    deliveryPickupBtn.addEventListener("click", () => setDelivery("pickup"));
+    
+    // Modal logic
+    const modal = document.getElementById("cartModal");
+    const openCartBtn = document.getElementById("openCartBtn");
+    const closeCartModal = document.getElementById("closeCartModal");
+    const closeCartFooter = document.getElementById("closeCartFooter");
+    const clearCartBtn = document.getElementById("clearCartBtn");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+
+    openCartBtn.addEventListener("click", () => {
+        renderCartModal();
+        modal.classList.add("active");
+    });
+    function closeModalFunc() {
+        modal.classList.remove("active");
+    }
+    closeCartModal.addEventListener("click", closeModalFunc);
+    closeCartFooter.addEventListener("click", closeModalFunc);
+    clearCartBtn.addEventListener("click", () => {
+        if (confirm("Limpar todo o carrinho?")) {
+            cartItems = [];
+            updateCartUI();
+            renderCartModal();
+        }
+    });
+    checkoutBtn.addEventListener("click", () => {
+        if (cartItems.length === 0) {
+            alert("Seu carrinho está vazio. Adicione massas deliciosas!");
+            return;
+        }
+        let mensagem = "🍝 *PEDIDO ELIANE MASSAS* 🍝\n\n";
+        cartItems.forEach(item => {
+            mensagem += `• ${item.nome} x${item.quantity} = R$ ${(item.precoUnitario * item.quantity).toFixed(2)}\n`;
+        });
+        const subtotal = cartItems.reduce((s, i) => s + (i.precoUnitario * i.quantity), 0);
+        if (deliveryType === "delivery") {
+            mensagem += `\n🚚 Taxa de entrega: R$ 10,00\n`;
+        } else {
+            mensagem += `\n🏬 Retirada no local (Grátis)\n`;
+        }
+        mensagem += `\n*TOTAL: R$ ${getTotalPrice().toFixed(2)}*\n`;
+        mensagem += `\n📞 Telefone: (16) 98241-8888\nForma de pagamento: a combinar.\nObrigado(a)! 🍷`;
+        const encoded = encodeURIComponent(mensagem);
+        window.open(`https://wa.me/5516982418888?text=${encoded}`, '_blank');
+    });
+
+    // Close modal on outside click
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            closeModalFunc();
+        }
+    });
+
+    // initial cart UI
+    updateCartUI();
+</script>
+</body>
+</html>
