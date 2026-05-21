@@ -2,78 +2,462 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliane Massas | Cardápio Artesanal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #fef7e8; font-family: 'Inter', sans-serif; color: #2c1e12; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
-        
-        /* Header */
-        .hero { text-align: center; padding: 2rem 0 1rem; border-bottom: 2px solid #f3e1c0; margin-bottom: 2rem; }
-        .logo-icon { font-size: 3.5rem; background: #d94a1f; width: 80px; height: 80px; line-height: 90px; border-radius: 50%; color: white; margin: 0 auto 0.75rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #c53a1f; letter-spacing: -1px; }
-        .tagline { font-size: 0.9rem; color: #6b4c2c; background: #fff3e6; display: inline-block; padding: 0.4rem 1.2rem; border-radius: 40px; }
-        
-        /* Delivery */
-        .delivery-option { background: white; border-radius: 28px; padding: 1rem 1.5rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; border: 1px solid #f3e0c8; }
-        .delivery-btn { background: #faf3ea; border: 1px solid #e3cfb5; padding: 0.5rem 1.2rem; border-radius: 60px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .delivery-btn.active { background: #c53a1f; color: white; border-color: #c53a1f; }
-        
-        /* Sections */
-        .section-sub { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: #b16e3c; margin-bottom: 0.3rem; }
-        .section-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin: 2rem 0 1.2rem; border-left: 5px solid #c53a1f; padding-left: 1rem; }
-        
-        /* Products Grid */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .product-card { background: white; border-radius: 24px; overflow: hidden; border: 1px solid #f5e5d4; transition: all 0.3s ease; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(0,0,0,0.15); }
-        .product-img { width: 100%; height: 180px; background: linear-gradient(135deg, #f8e8d8, #f0dcc8); display: flex; align-items: center; justify-content: center; font-size: 5rem; }
-        .card-content { padding: 1.2rem; }
-        .product-name { font-size: 1.4rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .product-price { color: #c53a1f; font-weight: 800; font-size: 1.2rem; background: #fff1e8; padding: 0.2rem 0.8rem; border-radius: 30px; }
-        .product-desc { color: #6b4c2c; font-size: 0.85rem; margin: 0.5rem 0 1rem; line-height: 1.4; }
-        .sabor-select { padding: 0.5rem; border-radius: 40px; border: 1px solid #e2cfba; background: #fef7e8; font-size: 0.8rem; flex: 1; min-width: 130px; cursor: pointer; }
-        .add-btn { background: #c53a1f; border: none; padding: 0.5rem 1.2rem; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; transition: 0.2s; }
-        .add-btn:hover { background: #a52e16; transform: scale(0.97); }
-        
-        /* Carrinho Flutuante */
-        .cart-fixed { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1000; }
-        .cart-button { background: #2c1e12; border-radius: 60px; padding: 0.8rem 1.5rem; color: white; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.25); font-size: 1rem; transition: 0.2s; }
-        .cart-button:hover { transform: scale(1.02); background: #3d2a1a; }
-        .cart-count { background: #f5a623; border-radius: 50px; padding: 2px 8px; font-size: 0.8rem; }
-        
-        /* Modal Carrinho */
-        .cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
-        .cart-modal.active { display: flex; }
-        .cart-panel { background: white; max-width: 550px; width: 90%; border-radius: 28px; padding: 1.5rem; max-height: 85vh; overflow-y: auto; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f3dfcb; }
-        .cart-items { list-style: none; margin: 1rem 0; max-height: 400px; overflow-y: auto; }
-        .cart-items li { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #f0e2d4; }
-        .cart-item-info { flex: 1; }
-        .cart-item-name { font-weight: 600; font-size: 0.9rem; }
-        .cart-item-price { font-size: 0.7rem; color: #6b4c2c; }
-        .cart-item-qtd { display: flex; align-items: center; gap: 6px; }
-        .qtd-btn { background: #f0e2d2; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .qtd-btn:hover { background: #e2cfba; }
-        .remove-item { background: none; border: none; color: #c53a1f; cursor: pointer; margin-left: 8px; font-size: 1rem; }
-        .cart-total { font-weight: 800; font-size: 1.3rem; text-align: right; margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #e7cfb9; }
-        .close-cart { background: #ddd0c0; border: none; padding: 0.5rem 1rem; border-radius: 40px; cursor: pointer; margin-top: 0.5rem; }
-        .checkout { background: #25D366; color: white; border: none; padding: 0.8rem; border-radius: 50px; width: 100%; font-weight: bold; margin-top: 1rem; cursor: pointer; font-size: 1rem; transition: 0.2s; }
-        .checkout:hover { background: #128C7E; }
-        
-        /* Footer */
-        .footer { background: #f5e5d8; margin-top: 3rem; padding: 1.5rem; text-align: center; border-radius: 30px 30px 0 0; font-size: 0.8rem; }
-        .contact-info { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 0.8rem 0; }
-        .contact-info i { color: #c53a1f; margin-right: 6px; }
-        hr { margin: 1rem 0; border-color: #e2cfba; }
-        .whatsapp-fixed { position: fixed; bottom: 1.5rem; left: 1.5rem; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; transition: 0.2s; }
-        .whatsapp-fixed:hover { transform: scale(1.05); background: #128C7E; }
-        .toast { position: fixed; bottom: 100px; right: 20px; background: #2c1e12; color: white; padding: 10px 20px; border-radius: 50px; z-index: 1001; animation: fadeOut 2s ease forwards; font-size: 0.9rem; }
-        @keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
-        @media (max-width: 650px) { .container { padding: 1rem; } .products-grid { grid-template-columns: 1fr; } h1 { font-size: 2rem; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fef7e8;
+            font-family: 'Inter', sans-serif;
+            color: #2c1e12;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2rem 0 1rem;
+            border-bottom: 2px solid #f3e1c0;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            font-size: 3.5rem;
+            background: #d94a1f;
+            width: 80px;
+            height: 80px;
+            line-height: 90px;
+            border-radius: 50%;
+            color: white;
+            margin: 0 auto 0.75rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #c53a1f;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            color: #6b4c2c;
+            background: #fff3e6;
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+        }
+
+        .delivery-option {
+            background: white;
+            border-radius: 28px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #f3e0c8;
+        }
+
+        .delivery-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delivery-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .delivery-btn {
+            background: #faf3ea;
+            border: 1px solid #e3cfb5;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delivery-btn.active {
+            background: #c53a1f;
+            color: white;
+            border-color: #c53a1f;
+        }
+
+        .section-sub {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #b16e3c;
+            margin-bottom: 0.3rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin: 2rem 0 1.2rem;
+            border-left: 5px solid #c53a1f;
+            padding-left: 1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #f5e5d4;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.15);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f8e8d8, #f0dcc8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .card-content {
+            padding: 1.2rem;
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .product-price {
+            color: #c53a1f;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: #fff1e8;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+        }
+
+        .product-desc {
+            color: #6b4c2c;
+            font-size: 0.85rem;
+            margin: 0.5rem 0 1rem;
+            line-height: 1.4;
+        }
+
+        .select-sabor {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .sabor-select {
+            padding: 0.5rem;
+            border-radius: 40px;
+            border: 1px solid #e2cfba;
+            background: #fef7e8;
+            font-size: 0.8rem;
+            flex: 1;
+            min-width: 130px;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            background: #c53a1f;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #a52e16;
+            transform: scale(0.97);
+        }
+
+        .cart-fixed {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+        }
+
+        .cart-button {
+            background: #2c1e12;
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .cart-button:hover {
+            transform: scale(1.02);
+            background: #3d2a1a;
+        }
+
+        .cart-count {
+            background: #f5a623;
+            border-radius: 50px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-modal.active {
+            display: flex;
+        }
+
+        .cart-panel {
+            background: white;
+            max-width: 550px;
+            width: 90%;
+            border-radius: 28px;
+            padding: 1.5rem;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f3dfcb;
+        }
+
+        .cart-items {
+            list-style: none;
+            margin: 1rem 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cart-items li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0e2d4;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-price {
+            font-size: 0.7rem;
+            color: #6b4c2c;
+        }
+
+        .cart-item-qtd {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qtd-btn {
+            background: #f0e2d2;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .qtd-btn:hover {
+            background: #e2cfba;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #c53a1f;
+            cursor: pointer;
+            margin-left: 8px;
+            font-size: 1rem;
+        }
+
+        .cart-total {
+            font-weight: 800;
+            font-size: 1.3rem;
+            text-align: right;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e7cfb9;
+        }
+
+        .close-cart {
+            background: #ddd0c0;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .checkout {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50px;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .checkout:hover {
+            background: #128C7E;
+        }
+
+        .footer {
+            background: #f5e5d8;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 30px 30px 0 0;
+            font-size: 0.8rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 0.8rem 0;
+        }
+
+        .contact-info i {
+            color: #c53a1f;
+            margin-right: 6px;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border-color: #e2cfba;
+        }
+
+        .whatsapp-fixed {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 999;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .whatsapp-fixed:hover {
+            transform: scale(1.05);
+            background: #128C7E;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: #2c1e12;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 1001;
+            animation: fadeOut 2s ease forwards;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @media (max-width: 650px) {
+            .container { padding: 1rem; }
+            .products-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+        }
     </style>
 </head>
 <body>
@@ -87,7 +471,7 @@
 
     <div class="delivery-option">
         <div class="delivery-title"><i class="fas fa-truck-fast"></i> Escolha como receber seu pedido</div>
-        <div style="display: flex; gap: 0.8rem;">
+        <div class="delivery-buttons">
             <div class="delivery-btn" id="deliveryHome">🚚 Entrega em Casa <strong>+ R$ 10,00</strong></div>
             <div class="delivery-btn active" id="deliveryPickup">🏬 Retirada no Local <strong>Grátis</strong></div>
         </div>
@@ -111,12 +495,10 @@
     </div>
 </div>
 
-<!-- Botão WhatsApp Flutuante -->
 <a href="https://wa.me/5516982418888" target="_blank" class="whatsapp-fixed">
     <i class="fab fa-whatsapp"></i>
 </a>
 
-<!-- Botão Carrinho -->
 <div class="cart-fixed">
     <button class="cart-button" id="openCartBtn">
         <i class="fas fa-shopping-basket"></i> Ver carrinho
@@ -125,7 +507,6 @@
     </button>
 </div>
 
-<!-- Modal Carrinho -->
 <div id="cartModal" class="cart-modal">
     <div class="cart-panel">
         <div class="cart-header">
@@ -143,205 +524,267 @@
 </div>
 
 <script>
-    // ==================== PRODUTOS COMPLETOS ====================
-    const massasRecheadas = [
-        { id: "rondelli", nome: "Rondelli", preco: 45, descricao: "Massa enrolada em formato cilíndrico, textura macia e delicada.", icone: "fas fa-roll", emoji: "🍝" },
-        { id: "canelone", nome: "Canelone", preco: 45, descricao: "Tubos largos de massa fresca recheados generosamente.", icone: "fas fa-scroll", emoji: "📜" },
-        { id: "capeletti", nome: "Capeletti", preco: 45, descricao: "Pequenas trouxinhas em formato de chapéu, massa bem fininha.", icone: "fas fa-hat-cowboy", emoji: "🎩" },
-        { id: "conchiglione", nome: "Conchiglione", preco: 45, descricao: "Conchas grandes de massa que abraçam o recheio.", icone: "fas fa-fish", emoji: "🐚" },
-        { id: "ravioli", nome: "Ravioli", preco: 45, descricao: "Quadradinhos de massa recheada, com bordas seladas.", icone: "fas fa-border-all", emoji: "◻️" },
-        { id: "sofioli", nome: "Sofioli", preco: 45, descricao: "Formato de travesseiro com recheio generoso no centro.", icone: "fas fa-bed", emoji: "🛏️" },
-        { id: "tortelloni", nome: "Tortelloni", preco: 45, descricao: "Versão maior do tortellini, formato de anel recheado.", icone: "fas fa-circle", emoji: "⭕" }
-    ];
+    (function() {
+        const massasRecheadas = [
+            { id: "rondelli", nome: "Rondelli", preco: 45, descricao: "Massa enrolada em formato cilíndrico, textura macia e delicada.", emoji: "🍝" },
+            { id: "canelone", nome: "Canelone", preco: 45, descricao: "Tubos largos de massa fresca recheados generosamente.", emoji: "📜" },
+            { id: "capeletti", nome: "Capeletti", preco: 45, descricao: "Pequenas trouxinhas em formato de chapéu, massa bem fininha.", emoji: "🎩" },
+            { id: "conchiglione", nome: "Conchiglione", preco: 45, descricao: "Conchas grandes de massa que abraçam o recheio.", emoji: "🐚" },
+            { id: "ravioli", nome: "Ravioli", preco: 45, descricao: "Quadradinhos de massa recheada, com bordas seladas.", emoji: "◻️" },
+            { id: "sofioli", nome: "Sofioli", preco: 45, descricao: "Formato de travesseiro com recheio generoso no centro.", emoji: "🛏️" },
+            { id: "tortelloni", nome: "Tortelloni", preco: 45, descricao: "Versão maior do tortellini, formato de anel recheado.", emoji: "⭕" }
+        ];
 
-    const outrasMassas = [
-        { id: "nhoque", nome: "Nhoque", preco: 38, descricao: "Pequenos bolinhos macios que derretem na boca.", icone: "fas fa-potato", emoji: "🥔", temSabor: true },
-        { id: "panqueca", nome: "Panqueca", preco: 43, descricao: "Discos fininhos de massa enrolados com recheio.", icone: "fas fa-pancakes", emoji: "🥞", temSabor: true },
-        { id: "lasanha", nome: "Massa para Lasanha", preco: 20, descricao: "Placas retangulares de massa fresca prontas para montar.", icone: "fas fa-square", emoji: "🍽️", temSabor: false }
-    ];
+        const outrasMassas = [
+            { id: "nhoque", nome: "Nhoque", preco: 38, descricao: "Pequenos bolinhos macios que derretem na boca.", emoji: "🥔", temSabor: true },
+            { id: "panqueca", nome: "Panqueca", preco: 43, descricao: "Discos fininhos de massa enrolados com recheio.", emoji: "🥞", temSabor: true },
+            { id: "lasanha", nome: "Massa para Lasanha", preco: 20, descricao: "Placas retangulares de massa fresca prontas para montar.", emoji: "🍽️", temSabor: false }
+        ];
 
-    let carrinho = [];
-    let tipoEntrega = "pickup";
-    const TAXA_ENTREGA = 10;
-    const TELEFONE = "5516982418888";
+        let carrinho = [];
+        let tipoEntrega = "pickup";
+        const TAXA_ENTREGA = 10;
+        const TELEFONE = "5516982418888";
 
-    function getSubtotal() { return carrinho.reduce((total, item) => total + (item.preco * item.qtd), 0); }
-    function getTotal() { const sub = getSubtotal(); return tipoEntrega === "delivery" ? sub + TAXA_ENTREGA : sub; }
-
-    function mostrarToast(msg) {
-        const t = document.createElement("div"); t.className = "toast"; t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
-        document.body.appendChild(t); setTimeout(() => t.remove(), 2000);
-    }
-
-    function adicionarAoCarrinho(produto, sabor = null) {
-        const nomeExib = sabor ? `${produto.nome} (${sabor})` : produto.nome;
-        const existente = carrinho.find(i => i.nome === nomeExib && i.preco === produto.preco);
-        if (existente) { existente.qtd++; }
-        else { carrinho.push({ id: produto.id, nome: nomeExib, preco: produto.preco, qtd: 1, sabor }); }
-        atualizarUI();
-        mostrarToast(`✓ ${produto.nome} adicionado ao carrinho!`);
-    }
-
-    function removerItem(index) { carrinho.splice(index, 1); atualizarUI(); if (modalAtivo()) renderizarCarrinho(); }
-    
-    function alterarQuantidade(index, delta) {
-        if (carrinho[index]) { carrinho[index].qtd += delta; if (carrinho[index].qtd <= 0) carrinho.splice(index, 1); }
-        atualizarUI(); if (modalAtivo()) renderizarCarrinho();
-    }
-    
-    function limparCarrinho() { if (carrinho.length && confirm("Limpar todo o carrinho?")) { carrinho = []; atualizarUI(); renderizarCarrinho(); } }
-    function modalAtivo() { return document.getElementById("cartModal").classList.contains("active"); }
-
-    function atualizarUI() {
-        const totalQtd = carrinho.reduce((s, i) => s + i.qtd, 0);
-        document.getElementById("cartCount").innerText = totalQtd;
-        document.getElementById("cartTotalPreview").innerHTML = `R$ ${getTotal().toFixed(2)}`;
-        if (modalAtivo()) renderizarCarrinho();
-    }
-
-    function renderizarCarrinho() {
-        const lista = document.getElementById("cartItemsList");
-        if (!carrinho.length) { 
-            lista.innerHTML = '<li style="justify-content:center; color:#999;">🛒 Carrinho vazio</li>'; 
-            document.getElementById("cartTotalArea").innerHTML = ""; 
-            return; 
+        function getSubtotal() {
+            return carrinho.reduce((total, item) => total + (item.preco * item.qtd), 0);
         }
-        lista.innerHTML = "";
-        carrinho.forEach((item, idx) => {
-            const li = document.createElement("li");
-            li.innerHTML = `
-                <div class="cart-item-info">
-                    <div class="cart-item-name">${item.nome}</div>
-                    <div class="cart-item-price">R$ ${item.preco.toFixed(2)} un.</div>
-                </div>
-                <div class="cart-item-qtd">
-                    <button class="qtd-btn" data-idx="${idx}" data-delta="-1">-</button>
-                    <span style="min-width:30px;text-align:center">${item.qtd}</span>
-                    <button class="qtd-btn" data-idx="${idx}" data-delta="1">+</button>
-                    <button class="remove-item" data-idx="${idx}"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            lista.appendChild(li);
-        });
-        
-        document.querySelectorAll(".qtd-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => { alterarQuantidade(parseInt(btn.dataset.idx), parseInt(btn.dataset.delta)); });
-        });
-        document.querySelectorAll(".remove-item").forEach(btn => {
-            btn.addEventListener("click", (e) => { removerItem(parseInt(btn.dataset.idx)); });
-        });
-        
-        const total = getTotal();
-        document.getElementById("cartTotalArea").innerHTML = `Total${tipoEntrega === "delivery" ? " (+ taxa entrega R$10)" : ""}: <strong>R$ ${total.toFixed(2)}</strong>`;
-    }
 
-    function finalizarPedido() {
-        if (!carrinho.length) { alert("Seu carrinho está vazio! Adicione algumas massas deliciosas."); return; }
-        
-        let mensagem = "🍝 *PEDIDO ELIANE MASSAS* 🍝\n\n";
-        mensagem += "*ITENS DO PEDIDO:*\n";
-        carrinho.forEach(item => {
-            mensagem += `• ${item.nome} — ${item.qtd}x = R$ ${(item.preco * item.qtd).toFixed(2)}\n`;
-        });
-        
-        mensagem += `\n📋 *Subtotal:* R$ ${getSubtotal().toFixed(2)}`;
-        if (tipoEntrega === "delivery") {
-            mensagem += `\n🚚 *Taxa de entrega:* R$ 10,00`;
-        } else {
-            mensagem += `\n🏬 *Retirada no local* (Grátis)`;
+        function getTotal() {
+            const sub = getSubtotal();
+            return tipoEntrega === "delivery" ? sub + TAXA_ENTREGA : sub;
         }
-        mensagem += `\n\n💰 *TOTAL DO PEDIDO: R$ ${getTotal().toFixed(2)}*\n`;
-        mensagem += `\n📞 Contato para entrega: (16) 98241-8888\n`;
-        mensagem += `⏰ Forma de pagamento: ( ) Dinheiro ( ) Pix ( ) Cartão\n`;
-        mensagem += `\n✨ *Obrigado(a) pela preferência!* ✨`;
-        
-        const url = `https://wa.me/${TELEFONE}?text=${encodeURIComponent(mensagem)}`;
-        window.open(url, '_blank');
-    }
 
-    // Criar Cards dos Produtos
-    function criarCard(produto, temSabor = true) {
-        const card = document.createElement("div"); 
-        card.className = "product-card";
-        
-        const iconHtml = produto.icone ? `<i class="${produto.icone}" style="font-size: 4rem; color: #c53a1f;"></i>` : `<span style="font-size: 4rem;">${produto.emoji || '🍝'}</span>`;
-        
-        card.innerHTML = `
-            <div class="product-img">${iconHtml}</div>
-            <div class="card-content">
-                <div class="product-name">
-                    ${produto.nome}
-                    <span class="product-price">R$ ${produto.preco.toFixed(2)}</span>
-                </div>
-                <div class="product-desc">✨ ${produto.descricao}</div>
-                <div class="select-sabor">
-                    ${temSabor ? `
-                        <select class="sabor-select" data-id="${produto.id}">
-                            <option value="">Selecione o sabor</option>
-                            <option value="Carne">🥩 Carne</option>
-                            <option value="Frango">🍗 Frango</option>
-                            <option value="Queijo">🧀 Queijo</option>
-                            <option value="Brócolis">🥦 Brócolis</option>
-                            <option value="Palmito">🌴 Palmito</option>
-                            <option value="4 Queijos">🧀 4 Queijos</option>
-                            <option value="Calabresa">🌭 Calabresa</option>
-                        </select>
-                    ` : ""}
-                    <button class="add-btn" data-id="${produto.id}" data-nome="${produto.nome}" data-preco="${produto.preco}" data-temsabor="${temSabor}">
-                        <i class="fas fa-cart-plus"></i> ${temSabor ? "Adicionar" : "Adicionar"}
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        const btn = card.querySelector(".add-btn");
-        btn.addEventListener("click", () => {
-            if (temSabor) { 
-                const select = card.querySelector(".sabor-select"); 
-                const sabor = select.value; 
-                if (!sabor) { 
-                    alert(`⚠️ Por favor, selecione um sabor para ${produto.nome}`); 
-                    return; 
-                } 
-                adicionarAoCarrinho(produto, sabor); 
-            } else { 
-                adicionarAoCarrinho(produto); 
+        function mostrarToast(msg) {
+            const t = document.createElement("div");
+            t.className = "toast";
+            t.innerHTML = '<i class="fas fa-check-circle"></i> ' + msg;
+            document.body.appendChild(t);
+            setTimeout(function() { t.remove(); }, 2000);
+        }
+
+        function adicionarAoCarrinho(produto, sabor) {
+            var nomeExib = sabor ? produto.nome + " (" + sabor + ")" : produto.nome;
+            var existente = null;
+            for (var i = 0; i < carrinho.length; i++) {
+                if (carrinho[i].nome === nomeExib && carrinho[i].preco === produto.preco) {
+                    existente = carrinho[i];
+                    break;
+                }
             }
-        });
-        return card;
-    }
+            if (existente) {
+                existente.qtd++;
+            } else {
+                carrinho.push({ id: produto.id, nome: nomeExib, preco: produto.preco, qtd: 1, sabor: sabor });
+            }
+            atualizarUI();
+            mostrarToast(produto.nome + " adicionado ao carrinho!");
+        }
 
-    // Renderizar Grids
-    const recheadasGrid = document.getElementById("recheadasGrid");
-    const outrasGrid = document.getElementById("outrasGrid");
-    
-    massasRecheadas.forEach(p => recheadasGrid.appendChild(criarCard(p, true)));
-    outrasMassas.forEach(p => outrasGrid.appendChild(criarCard(p, p.temSabor !== false)));
+        function removerItem(index) {
+            carrinho.splice(index, 1);
+            atualizarUI();
+            if (modalAtivo()) renderizarCarrinho();
+        }
 
-    // Eventos de Entrega
-    document.getElementById("deliveryHome").onclick = () => { 
-        tipoEntrega = "delivery"; 
-        document.getElementById("deliveryHome").classList.add("active"); 
-        document.getElementById("deliveryPickup").classList.remove("active"); 
-        atualizarUI(); 
-        if(modalAtivo()) renderizarCarrinho(); 
-    };
-    document.getElementById("deliveryPickup").onclick = () => { 
-        tipoEntrega = "pickup"; 
-        document.getElementById("deliveryPickup").classList.add("active"); 
-        document.getElementById("deliveryHome").classList.remove("active"); 
-        atualizarUI(); 
-        if(modalAtivo()) renderizarCarrinho(); 
-    };
+        function alterarQuantidade(index, delta) {
+            if (carrinho[index]) {
+                carrinho[index].qtd += delta;
+                if (carrinho[index].qtd <= 0) {
+                    carrinho.splice(index, 1);
+                }
+            }
+            atualizarUI();
+            if (modalAtivo()) renderizarCarrinho();
+        }
 
-    // Modal Carrinho
-    const modal = document.getElementById("cartModal");
-    document.getElementById("openCartBtn").onclick = () => { renderizarCarrinho(); modal.classList.add("active"); };
-    document.getElementById("closeCartModal").onclick = () => modal.classList.remove("active");
-    document.getElementById("closeCartFooter").onclick = () => modal.classList.remove("active");
-    document.getElementById("clearCartBtn").onclick = limparCarrinho;
-    document.getElementById("checkoutBtn").onclick = finalizarPedido;
-    modal.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
+        function limparCarrinho() {
+            if (carrinho.length > 0 && confirm("Limpar todo o carrinho?")) {
+                carrinho = [];
+                atualizarUI();
+                renderizarCarrinho();
+            }
+        }
+
+        function modalAtivo() {
+            var modal = document.getElementById("cartModal");
+            return modal.classList.contains("active");
+        }
+
+        function atualizarUI() {
+            var totalQtd = 0;
+            for (var i = 0; i < carrinho.length; i++) {
+                totalQtd += carrinho[i].qtd;
+            }
+            document.getElementById("cartCount").innerText = totalQtd;
+            document.getElementById("cartTotalPreview").innerHTML = "R$ " + getTotal().toFixed(2);
+            if (modalAtivo()) renderizarCarrinho();
+        }
+
+        function renderizarCarrinho() {
+            var lista = document.getElementById("cartItemsList");
+            if (carrinho.length === 0) {
+                lista.innerHTML = '<li style="justify-content:center; color:#999;">🛒 Carrinho vazio</li>';
+                document.getElementById("cartTotalArea").innerHTML = "";
+                return;
+            }
+            lista.innerHTML = "";
+            for (var i = 0; i < carrinho.length; i++) {
+                var item = carrinho[i];
+                var li = document.createElement("li");
+                li.innerHTML = '<div class="cart-item-info">' +
+                    '<div class="cart-item-name">' + item.nome + '</div>' +
+                    '<div class="cart-item-price">R$ ' + item.preco.toFixed(2) + ' un.</div>' +
+                    '</div>' +
+                    '<div class="cart-item-qtd">' +
+                    '<button class="qtd-btn" data-idx="' + i + '" data-delta="-1">-</button>' +
+                    '<span style="min-width:30px;text-align:center">' + item.qtd + '</span>' +
+                    '<button class="qtd-btn" data-idx="' + i + '" data-delta="1">+</button>' +
+                    '<button class="remove-item" data-idx="' + i + '"><i class="fas fa-trash-alt"></i></button>' +
+                    '</div>';
+                lista.appendChild(li);
+            }
+
+            var qtdBtns = document.querySelectorAll(".qtd-btn");
+            for (var j = 0; j < qtdBtns.length; j++) {
+                qtdBtns[j].addEventListener("click", function(e) {
+                    var idx = parseInt(this.getAttribute("data-idx"));
+                    var delta = parseInt(this.getAttribute("data-delta"));
+                    alterarQuantidade(idx, delta);
+                });
+            }
+
+            var removeBtns = document.querySelectorAll(".remove-item");
+            for (var k = 0; k < removeBtns.length; k++) {
+                removeBtns[k].addEventListener("click", function(e) {
+                    var idx = parseInt(this.getAttribute("data-idx"));
+                    removerItem(idx);
+                });
+            }
+
+            var total = getTotal();
+            var taxaTexto = tipoEntrega === "delivery" ? " (+ taxa entrega R$10)" : "";
+            document.getElementById("cartTotalArea").innerHTML = "Total" + taxaTexto + ": <strong>R$ " + total.toFixed(2) + "</strong>";
+        }
+
+        function finalizarPedido() {
+            if (carrinho.length === 0) {
+                alert("Seu carrinho está vazio! Adicione algumas massas deliciosas.");
+                return;
+            }
+
+            var mensagem = "🍝 *PEDIDO ELIANE MASSAS* 🍝\n\n";
+            mensagem += "*ITENS DO PEDIDO:*\n";
+            for (var i = 0; i < carrinho.length; i++) {
+                var item = carrinho[i];
+                mensagem += "• " + item.nome + " — " + item.qtd + "x = R$ " + (item.preco * item.qtd).toFixed(2) + "\n";
+            }
+
+            mensagem += "\n📋 *Subtotal:* R$ " + getSubtotal().toFixed(2);
+            if (tipoEntrega === "delivery") {
+                mensagem += "\n🚚 *Taxa de entrega:* R$ 10,00";
+            } else {
+                mensagem += "\n🏬 *Retirada no local* (Grátis)";
+            }
+            mensagem += "\n\n💰 *TOTAL DO PEDIDO: R$ " + getTotal().toFixed(2) + "*\n";
+            mensagem += "\n📞 Contato para entrega: (16) 98241-8888\n";
+            mensagem += "⏰ Forma de pagamento: ( ) Dinheiro ( ) Pix ( ) Cartão\n";
+            mensagem += "\n✨ *Obrigado(a) pela preferência!* ✨";
+
+            var url = "https://wa.me/" + TELEFONE + "?text=" + encodeURIComponent(mensagem);
+            window.open(url, '_blank');
+        }
+
+        function criarCard(produto, temSabor) {
+            var card = document.createElement("div");
+            card.className = "product-card";
+
+            var saborHtml = "";
+            if (temSabor) {
+                saborHtml = '<select class="sabor-select" data-id="' + produto.id + '">' +
+                    '<option value="">Selecione o sabor</option>' +
+                    '<option value="Carne">🥩 Carne</option>' +
+                    '<option value="Frango">🍗 Frango</option>' +
+                    '<option value="Queijo">🧀 Queijo</option>' +
+                    '<option value="Brócolis">🥦 Brócolis</option>' +
+                    '<option value="Palmito">🌴 Palmito</option>' +
+                    '<option value="4 Queijos">🧀 4 Queijos</option>' +
+                    '<option value="Calabresa">🌭 Calabresa</option>' +
+                    '</select>';
+            }
+
+            card.innerHTML = '<div class="product-img"><span style="font-size: 4rem;">' + produto.emoji + '</span></div>' +
+                '<div class="card-content">' +
+                '<div class="product-name">' + produto.nome + '<span class="product-price">R$ ' + produto.preco.toFixed(2) + '</span></div>' +
+                '<div class="product-desc">✨ ' + produto.descricao + '</div>' +
+                '<div class="select-sabor">' + saborHtml +
+                '<button class="add-btn" data-id="' + produto.id + '" data-nome="' + produto.nome + '" data-preco="' + produto.preco + '" data-temsabor="' + temSabor + '">' +
+                '<i class="fas fa-cart-plus"></i> Adicionar</button>' +
+                '</div></div>';
+
+            var btn = card.querySelector(".add-btn");
+            btn.addEventListener("click", function() {
+                if (temSabor) {
+                    var select = card.querySelector(".sabor-select");
+                    var sabor = select.value;
+                    if (!sabor) {
+                        alert("⚠️ Por favor, selecione um sabor para " + produto.nome);
+                        return;
+                    }
+                    adicionarAoCarrinho(produto, sabor);
+                } else {
+                    adicionarAoCarrinho(produto, null);
+                }
+            });
+            return card;
+        }
+
+        var recheadasGrid = document.getElementById("recheadasGrid");
+        var outrasGrid = document.getElementById("outrasGrid");
+
+        for (var i = 0; i < massasRecheadas.length; i++) {
+            recheadasGrid.appendChild(criarCard(massasRecheadas[i], true));
+        }
+
+        for (var j = 0; j < outrasMassas.length; j++) {
+            var produto = outrasMassas[j];
+            var temSabor = (produto.temSabor === undefined) ? true : produto.temSabor;
+            outrasGrid.appendChild(criarCard(produto, temSabor));
+        }
+
+        document.getElementById("deliveryHome").onclick = function() {
+            tipoEntrega = "delivery";
+            document.getElementById("deliveryHome").classList.add("active");
+            document.getElementById("deliveryPickup").classList.remove("active");
+            atualizarUI();
+            if (modalAtivo()) renderizarCarrinho();
+        };
+
+        document.getElementById("deliveryPickup").onclick = function() {
+            tipoEntrega = "pickup";
+            document.getElementById("deliveryPickup").classList.add("active");
+            document.getElementById("deliveryHome").classList.remove("active");
+            atualizarUI();
+            if (modalAtivo()) renderizarCarrinho();
+        };
+
+        var modal = document.getElementById("cartModal");
+        document.getElementById("openCartBtn").onclick = function() {
+            renderizarCarrinho();
+            modal.classList.add("active");
+        };
+        document.getElementById("closeCartModal").onclick = function() {
+            modal.classList.remove("active");
+        };
+        document.getElementById("closeCartFooter").onclick = function() {
+            modal.classList.remove("active");
+        };
+        document.getElementById("clearCartBtn").onclick = limparCarrinho;
+        document.getElementById("checkoutBtn").onclick = finalizarPedido;
+        modal.onclick = function(e) {
+            if (e.target === modal) modal.classList.remove("active");
+        };
+    })();
 </script>
 </body>
 </html>
